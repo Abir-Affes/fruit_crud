@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { Fruits } from '../fruits';
 import { FruitsService } from '../fruits.service';
 import { FormsModule } from '@angular/forms';
+import { Category } from 'src/app/categories/category';
+import { CategoriesService } from 'src/app/categories/category.service';
 
  
 @Component({
@@ -11,19 +13,37 @@ import { FormsModule } from '@angular/forms';
   styleUrls: ['./create.component.css'],
 })
 export class CreateComponent implements OnInit {
+  allCategories: Category[] = [];
   fruitForm: Fruits = {
     id: 0,
     name: '',
     price: 0,
     quantity: 0,
+    category:{
+      id: 0,
+      name: '',
+      description: '',
+    }
   };
+
  
   constructor(private fruitService:FruitsService,
+    private categoryService: CategoriesService,
+
     private router:Router) {}
  
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.get();
+  }
+ 
+  get() {
+    this.categoryService.get().subscribe((data) => {
+      this.allCategories = data;
+    });
+  }
  
   createfruit(){
+    console.log(this.fruitForm);
     this.fruitService.create(this.fruitForm)
     .subscribe({
       next:(data) => {
